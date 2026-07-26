@@ -182,7 +182,7 @@ async function handleMessage(ws, message) {
                 return;
             }
 
-            console.log(`[Text] Received: "${text.substring(0, 80)}${text.length > 80 ? '...' : ''}"`);
+            console.log(`[Text] Received ${text.length} chars`);
 
             const success = await typeAtCursor(text);
             ws.send(JSON.stringify({
@@ -197,7 +197,7 @@ async function handleMessage(ws, message) {
             const final = !!message.final;
             const previousText = ws.realtimePreview || '';
 
-            console.log(`[Realtime] ${final ? 'final' : 'partial'} "${text.substring(0, 60)}${text.length > 60 ? '...' : ''}"`);
+            console.log(`[Realtime] ${final ? 'final' : 'partial'} ${text.length} chars`);
 
             const success = await replaceTypedText(previousText, text);
             if (success) {
@@ -218,7 +218,7 @@ async function handleMessage(ws, message) {
         case 'clipboard_paste': {
             const text = message.text;
             if (text && text.trim().length > 0) {
-                console.log(`[Clip] Received clipboard text: "${text.substring(0, 40)}${text.length > 40 ? '...' : ''}"`);
+                console.log(`[Clip] Received ${text.length} clipboard chars`);
                 try {
                     const success = await typeAtCursor(text);
                     ws.send(JSON.stringify({ type: 'ack', status: success ? 'typed' : 'failed' }));
