@@ -76,6 +76,12 @@ $env:WINDOWS_CERT_PASSWORD="pfx_password"
 
 Unsigned builds can still show Windows SmartScreen warnings. A valid code-signing certificate plus release reputation is the real fix for SmartScreen.
 
+For tagged GitHub Actions releases, add repository secrets `WINDOWS_CERT_PFX_BASE64` and `WINDOWS_CERT_PASSWORD`. The workflow reconstructs the PFX only in the temporary runner directory, signs before packaging, and never publishes the certificate or password. Generate the base64 value locally with:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\path\to\certificate.pfx"))
+```
+
 `publish-release` will:
 
 - create/update `dist/Bolo-Server.zip`
