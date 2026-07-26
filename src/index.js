@@ -200,6 +200,15 @@ async function main() {
         onExit: () => shutdown(httpServer)
     });
 
+    // Check only after startup settles; the updater refuses to interrupt an active phone session.
+    if (MANIFEST_URL) {
+        const updateTimer = setTimeout(
+            () => runUpdateCheck({ interactive: false, wss }),
+            15000
+        );
+        updateTimer.unref?.();
+    }
+
     // Auto-show QR code on first run if no devices are paired
     if (!settings.trustedTokens || settings.trustedTokens.length === 0) {
         setTimeout(() => {
