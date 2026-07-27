@@ -19,7 +19,7 @@ const { startAdvertising, stopAdvertising, getLocalIPs } = require('./discovery'
 const { startUdpDiscovery, stopUdpDiscovery } = require('./udp-discovery');
 const { startTray, stopTray, updateTunnelUrl } = require('./tray');
 const { loadSettings, saveSettings, getServiceName, bindStickyPort, DEFAULT_PORT } = require('./settings');
-const { isStartupEnabled, enableStartup } = require('./startup');
+const { isStartupEnabled, enableStartup, migrateLegacyStartup } = require('./startup');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
@@ -110,6 +110,9 @@ async function main() {
     if (handleSelfInstall()) {
         return; // Current process terminates
     }
+
+    // Older releases used a visible Node registry autorun in addition to the hidden shortcut.
+    migrateLegacyStartup();
 
     // 2. Single-instance lock (per Windows user)
     const net = require('net');

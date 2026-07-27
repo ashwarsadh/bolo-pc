@@ -1,6 +1,6 @@
 {
   "name": "bolo-pc-server",
-  "version": "7.4.2",
+  "version": "7.4.3",
   "description": "Bolo PC Server â€” Receives voice-transcribed text from your phone and types it at the cursor position on your PC.",
   "main": "src/index.js",
   "bin": "src/index.js",
