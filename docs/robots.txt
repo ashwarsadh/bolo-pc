@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ashwarsadh.github.io/bolo-pc/sitemap.xml
