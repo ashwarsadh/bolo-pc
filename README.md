@@ -1,117 +1,101 @@
-﻿# Bolo PC Server
+# Bolo PC: voice typing for Windows from your phone
 
-Receives voice-transcribed text from the Bolo Android app and types it at the current cursor position on your Windows PC.
+**Use your Android phone as a wireless microphone for your PC. Speak into the phone, and the text appears at your PC cursor over Wi-Fi.** Dictation in up to 34 languages, including Hindi, with optional AI clean-up.
 
-## Requirements
+[![Download latest release](https://img.shields.io/github/v/release/ashwarsadh/bolo-pc?label=Download%20Bolo%20PC&logo=windows)](https://github.com/ashwarsadh/bolo-pc/releases/latest)
+[![Get it on Google Play](https://img.shields.io/badge/Google%20Play-Bolo%20AI-3DDC84?logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=com.ashwar.bolo)
 
-- **Node.js 18+** â€” [Download](https://nodejs.org/)
-- **Windows 10/11**
-- Both phone and PC must be on the **same Wi-Fi network**
+Bolo PC is the Windows companion to the **Bolo AI** Android app. The phone listens and transcribes; this small PC app receives the text and types it into whatever window has focus: Word, Chrome, Notepad, Excel, your email, your code editor.
 
-## Setup
-
-```bash
-# Install dependencies (one-time)
-npm install
-
-# Start the server
-npm start
-```
-
-## Release and auto-update
-
-The PC app checks GitHub Releases on startup and updates from:
-
-- `https://github.com/ashwarsadh/bolo-pc/releases/latest/download/bolo-pc-manifest.json`
-- `https://github.com/ashwarsadh/bolo-pc/releases/latest/download/Bolo-Server.zip`
-
-The short user-facing download URL shown in the Android app is:
-
-- `https://tinyurl.com/bolo-pc`
-
-Keep that TinyURL target pointed to:
-
-- `https://github.com/ashwarsadh/bolo-pc/releases/latest/download/Bolo-Server.zip`
-
-For every new PC release:
-
-1. bump `version` in `package.json`
-2. build the EXE
-3. publish the ZIP + manifest to GitHub Releases
-
-Commands:
-
-```bash
-npm run build
-npm run publish-release
-```
-
-Required environment variables:
-
-```powershell
-$env:GITHUB_TOKEN="your_fine_grained_pat"
-$env:BOLO_RELEASE_REPOSITORY="ashwarsadh/bolo-pc"
-```
-
-Optional:
-
-```powershell
-$env:BOLO_RELEASE_NOTES="Short release notes"
-$env:BOLO_RELEASE_BODY="Full GitHub release notes"
-```
-
-Optional code signing:
-
-```powershell
-$env:WINDOWS_SIGNTOOL_PATH="C:\Program Files (x86)\Windows Kits\10\bin\x64\signtool.exe"
-$env:WINDOWS_CERT_SHA1="certificate_thumbprint"
-```
-
-or:
-
-```powershell
-$env:WINDOWS_CERT_PFX="C:\path\to\certificate.pfx"
-$env:WINDOWS_CERT_PASSWORD="pfx_password"
-```
-
-Unsigned builds can still show Windows SmartScreen warnings. A valid code-signing certificate plus release reputation is the real fix for SmartScreen.
-
-For tagged GitHub Actions releases, add repository secrets `WINDOWS_CERT_PFX_BASE64` and `WINDOWS_CERT_PASSWORD`. The workflow reconstructs the PFX only in the temporary runner directory, signs before packaging, and never publishes the certificate or password. Generate the base64 value locally with:
-
-```powershell
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\path\to\certificate.pfx"))
-```
-
-`publish-release` will:
-
-- create/update `dist/Bolo-Server.zip`
-- create/update `dist/bolo-pc-manifest.json`
-- create the `v<version>` GitHub release if needed
-- replace existing release assets so installed PC clients auto-update to the new version
-
-The release build patches the EXE to use the Windows GUI subsystem, so it starts as a tray/background app instead of opening a black console window.
-
-## How It Works
-
-1. **Start this server** on your PC (`npm start`)
-2. **Open Bolo** on your phone â†’ go to **PC Mode** tab
-3. Your PC will appear automatically in the discovery list
-4. **Tap your PC name** to connect
-5. **Tap the mic button** on your phone, speak, and the text appears at your PC's cursor position
+> Search **Bolo AI** on Google Play, or open the [Play Store listing](https://play.google.com/store/apps/details?id=com.ashwar.bolo).
 
 ## Features
 
-- **Zero-config discovery** â€” your phone finds the PC automatically via mDNS
-- **Cursor-position insertion** â€” text is pasted wherever your cursor is (any app: Word, Chrome, Notepad, etc.)
-- **Email formatting** â€” if you dictate an email, the phone automatically adds proper line breaks
-- **Clipboard preserved** â€” your clipboard content is saved and restored after each paste
+- **Phone as a PC microphone.** Dictate on your phone, text lands at the cursor on your PC.
+- **Voice typing in 34 languages** through Bolo Cloud, including English, Hindi, Bengali, Telugu, Marathi, Gujarati, Tamil, Kannada, Malayalam and Urdu. Full list below.
+- **AI clean-up of dictation.** Adds punctuation and removes fillers such as "umm" and "ahh" (uses OpenAI models).
+- **Two-way clipboard sync** between phone and PC.
+- **Offline option.** On-device dictation on the phone, with no cloud needed.
+- **Bring your own key.** Use your own OpenAI or Gemini key if you prefer. Bolo Cloud has a limited free trial.
+- **Automatic discovery.** The phone finds your PC on the same network; you confirm with a PIN.
+- **Clipboard preserved.** Your existing clipboard is saved and restored after each insert.
+- **Floating mic bubble** on Android to dictate into text fields on the phone itself.
+- **Tray app.** Runs quietly in the background.
+
+## Quick start
+
+1. Install **Bolo AI** on your Android phone: [Google Play](https://play.google.com/store/apps/details?id=com.ashwar.bolo).
+2. Install the PC app, by either route:
+   - **Download:** get `Bolo-Server-windows.zip` from the [latest release](https://github.com/ashwarsadh/bolo-pc/releases/latest), unzip it and run `Bolo-Server.exe`.
+   - **winget** (*pending approval*, [microsoft/winget-pkgs#464848](https://github.com/microsoft/winget-pkgs/pull/464848); it will not work until that is merged):
+     ```powershell
+     winget install ashwarsadh.Bolo
+     ```
+3. Put the phone and PC on the **same Wi-Fi network**.
+4. In the Bolo app, open the **PC Mode** tab. Your PC appears in the list; tap it and confirm the PIN.
+5. Click into any text field on the PC, tap the mic on the phone and speak.
+
+**Requirements:** Windows 10 or 11, an Android phone with the Bolo app, and both on the same local network.
+
+**About the Windows warning:** the PC app is not yet code-signed, so Windows SmartScreen may show a warning the first time you run it. Choose "More info", then "Run anyway", only if you downloaded it from this repository's releases.
+
+## Supported languages (34)
+
+English, Hindi, Bengali, Telugu, Marathi, Gujarati, Tamil, Kannada, Malayalam, Urdu, Spanish, Portuguese, French, German, Italian, Dutch, Polish, Romanian, Czech, Hungarian, Greek, Swedish, Russian, Ukrainian, Turkish, Arabic, Hebrew, Indonesian, Malay, Vietnamese, Thai, Japanese, Chinese, Swahili.
+
+Accuracy varies by language, voice and microphone. Dictation is verified for the languages above; others are not claimed.
+
+## FAQ
+
+### How do I use my phone as a microphone for my PC?
+Install Bolo on your Android phone and Bolo PC on Windows, connect both to the same Wi-Fi, then pair them from the **PC Mode** tab in the app. Whatever you speak into the phone is typed at the cursor on your PC.
+
+### Is there voice typing for Windows that works from a phone?
+Yes. Bolo PC receives text that the Android app transcribes and types it into any Windows program where your cursor is. You do not need a headset or a PC microphone.
+
+### Can I do Hindi voice typing on Windows?
+Yes. Hindi is one of the supported languages. Dictate in Hindi on your phone and the text appears on your PC. Marathi, Gujarati, Bengali, Telugu, Tamil, Kannada, Malayalam and Urdu are also supported.
+
+### Is there a free speech-to-text option for Windows?
+The Bolo PC app is free to download. Dictation can run offline on the phone, through Bolo Cloud (which has a limited free trial), or with your own OpenAI or Gemini key. Check the Play Store listing for current details.
+
+### Does it work without internet?
+Offline dictation on the phone works without cloud. The phone and PC still need to be on the same local network to talk to each other.
+
+### What is the clipboard sync?
+Copy on the phone and paste on the PC, or the other way round. Sync is explicit and two-way.
+
+### Does Bolo read what is on my screen or in other apps?
+No. On Android, Bolo uses the Accessibility service only to detect a text field and insert the text you dictated. It does not read screen content.
+
+### Why does Windows warn me when I run it?
+The executable is not code-signed yet, so SmartScreen may flag it. See "About the Windows warning" above.
 
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
-| Phone can't find PC | Ensure both are on the same Wi-Fi. Try manual IP from the server console. |
-| Port in use error | Close other instances or change `PORT` in `src/index.js` |
-| Text not typing | Click on a text field on your PC first, then speak on your phone |
-| Firewall blocking | Allow Node.js through Windows Firewall (usually prompted on first run) |
+| Phone cannot find PC | Make sure both are on the same Wi-Fi, then try again. |
+| Text not typing | Click into a text field on the PC first, then speak on the phone. |
+| Firewall prompt | Allow Bolo through Windows Firewall when asked on first run. |
+| Port in use | Close other instances of the PC app. |
 
+## Updates
+
+The PC app checks this repository's releases on startup and can update itself from `bolo-pc-manifest.json`.
+
+## For developers
+
+Source is in `src/`. Requires Node.js 18+.
+
+```bash
+npm install
+npm start          # run the server
+npm run build      # build the EXE
+```
+
+Release publishing uses `npm run publish-release` with `GITHUB_TOKEN` and `BOLO_RELEASE_REPOSITORY=ashwarsadh/bolo-pc` set. Optional code signing is configured through `WINDOWS_SIGNTOOL_PATH` with `WINDOWS_CERT_SHA1` or `WINDOWS_CERT_PFX`.
+
+---
+
+*Keywords: voice typing for PC from phone, phone as microphone for PC, wireless microphone, Hindi voice typing Windows, speech to text Windows, dictation, clipboard sync.*
